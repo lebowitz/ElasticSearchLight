@@ -31,6 +31,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>ElasticSearchLight.Program</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="log4net">
       <HintPath>packages\log4net.2.0.2\lib\net40-full\log4net.dll</HintPath>
@@ -46,16 +49,9 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Topshelf">
-      <HintPath>packages\Topshelf.3.1.1\lib\net40-full\Topshelf.dll</HintPath>
-    </Reference>
-    <Reference Include="Topshelf.Log4Net">
-      <HintPath>packages\Topshelf.Log4Net.3.1.1\lib\net40-full\Topshelf.Log4Net.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ElasticSearchLight.cs" />
-    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -63,14 +59,13 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\buildlight\buildlight\buildlight.csproj">
-      <Project>{76b29da3-2cb1-4f62-8d3c-5306aa82a3db}</Project>
-      <Name>buildlight</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SharpHue\SharpHue\SharpHue.csproj">
       <Project>{33f0d583-d76d-4a3a-8c16-febbc1929161}</Project>
       <Name>SharpHue</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="elasticsearch-light.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
