@@ -1,31 +1,46 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Nest;
 using SharpHue;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace ElasticSearchLight
 {
     public class Program
-    {        
-        static System.Drawing.Color current = Color.Snow;        
-        static Uri esClusterHealthUrl = new Uri(string.Format(@"{0}/_cluster/health", System.Environment.GetEnvironmentVariable("ES_URL")));        
-        static SharpHue.LightCollection _lights;
+    {
+        private static LightCollection _lights;
 
         public static void Main()
-        {            
-            SharpHue.Configuration.Initialize("newdeveloper");
-            SharpHue.LightService.Discover();
+        {
+            var client =new ElasticClient(new ConnectionSettings(new Uri(Environment.GetEnvironmentVariable("ES_LIGHT_URL"))));
+            Configuration.Initialize("newdeveloper");
+            LightService.Discover();
             _lights = new LightCollection();            
-            var b = new WebClient();
-            string status = JObject.Parse(b.DownloadString(esClusterHealthUrl))["status"].ToString();
-            _lights.ToList().ForEach(l => l.SetState((new LightStateBuilder()).Color(Color.FromName(status))));
+
+            var health = client.Health(HealthLevel.Cluster);
+            
+            string status = health.Status;
+            
+            Color esColor = Color.FromName(status);
+            
+            if (status == "green")
+            {
+                esColor = Color.DarkGreen;
+            }
+
+            if (health.RelocatingShards > 0)
+            {
+                esColor = Color.Purple;
+            }
+
+            SetAllLights(esColor);
+        }
+
+        private static void SetAllLights(Color c)
+        {
+            var ls = (new LightStateBuilder());
+            ls.Color(c);                       
+            _lights.ToList().ForEach(l => l.SetState(ls));
         }
     }
 }
